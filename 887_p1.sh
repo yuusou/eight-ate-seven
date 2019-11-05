@@ -24,7 +24,7 @@ scripts.
 
 Positional:
 
-    new_root     A mysql.conf file with login credentials.
+    new_root    Directory where the new system will be temporarily mounted.
 
 
 Optional:
