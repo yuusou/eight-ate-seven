@@ -4,12 +4,12 @@ CentOS 7 to 8 upgrade scripts
 ## What this script does:
 
 1. It creates a "Minimal" install of CentOS 8 in the new_root diretory;
-1. It copies over only the essential files to this install;
-1. It pivots / to this new directory
+1. It copies over only the essential files to new_root;
+1. It pivots / with new_root;
 1. It obliterates everything you have in /;
-1. It copies everything in this temporary directory to /;
+1. It copies everything in new_root to /;
 1. It pivots back to /;
-1. It obliterates the temporary directory.
+1. It obliterates new_root.
 
 ## Install:
 
