@@ -120,6 +120,11 @@ fi
 
 new_root="${1%/}"
 
+# SELinux check
+selinuxenabled
+[ $? -eq 0 ] && echo "SELinux Enabled! This would seriously break your system!" && exit 1
+
+
 # Install necessary packages (only wget for now).
 yum install -y wget
 
@@ -161,7 +166,7 @@ rpm --root "${new_root}" -e --nodeps libcurl-minimal
 yum install --installroot="${new_root}" --releasever=8 -y brotli chrony cracklib-dicts device-mapper-event device-mapper-event-libs device-mapper-persistent-data freetype geolite2-city geolite2-country glibc-langpack-en gnupg2-smime grub2-pc grub2-pc-modules grub2-tools-extra hardlink kernel kernel-modules kpartx langpacks-en libaio libcurl libevent libmaxminddb libnfsidmap libpng libpsl libsecret libssh libsss_autofs libsss_sudo libxkbcommon lvm2 lvm2-libs openssl-pkcs11 pigz pinentry publicsuffix-list-dafsa python3-unbound rpm-plugin-systemd-inhibit shared-mime-info sssd-nfs-idmap timedatex trousers trousers-lib xkeyboard-config
 yum install --installroot="${new_root}" --releasever=8 -y rsync
 
-# Copy remaining files necessary for proper functionality.
+# Copy remaining files necessary for proper functionality, disable SELinux on reboot.
 cp -a --parents /etc/{crypttab,fstab,resolv.conf} "${new_root}/"
 cp -a --parents /etc/default/grub "${new_root}/"
 cp -a --parents /etc/ssh/*_key{,.pub} "${new_root}/"
@@ -171,6 +176,8 @@ cp -a --parents /etc/sysconfig/{kernel,network} "${new_root}/"
 cp -a --parents /etc/sysconfig/network-scripts/{ifcfg,route,rule}-* "${new_root}/"
 cp -a /etc/lvm/{archive,backup} "${new_root}/etc/lvm/"
 sed -i '/DEFAULTKERNEL=kernel/ s/$/-core/' "${new_root}/etc/sysconfig/kernel"
+sed -i 's/=(enforcing|permissive)/=disabled/' "${new_root}/etc/sysconfig/selinux"
+sed -i 's/=(enforcing|permissive)/=disabled/' "${new_root}/etc/selinux/config"
 
 # Your own pre commands and scripts.
 (( ${#p[@]} )) && for c in "${p[@]}"; do `${c}`; done
