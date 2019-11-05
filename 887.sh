@@ -48,8 +48,8 @@ if [[ ${PIPESTATUS[0]} -ne 4 ]]; then
 fi
 
 # Parse command options.
-OPTS=T:R:m:p:P:s:S:
-LONGOPTS=tempsize:rbind:mirror:precommand:postcommand:prescript:postscript:
+OPTS=T:m:p:P:s:S:R
+LONGOPTS=tempsize:mirror:precommand:postcommand:prescript:postscript:rbind
 
 ! PARSED=$(getopt --options=$OPTS --longoptions=$LONGOPTS --name "$0" -- "$@")
 if [[ ${PIPESTATUS[0]} -ne 0 ]]; then
@@ -73,10 +73,6 @@ while true; do
             T=$1
             shift
             ;;
-        -R|--rbind)
-            R=true
-            shift
-            ;;
         -m|--mirror)
             m="$2"
             shift 2
@@ -96,6 +92,10 @@ while true; do
         -S|--postscript)
             S+=("$2")
             shift 2
+            ;;
+        -R|--rbind)
+            R=true
+            shift
             ;;
         -q|--quiet)
             q="> /dev/null 2>&1"
