@@ -176,8 +176,8 @@ cp -a --parents /etc/sysconfig/{kernel,network} "${new_root}/"
 cp -a --parents /etc/sysconfig/network-scripts/{ifcfg,route,rule}-* "${new_root}/"
 cp -a /etc/lvm/{archive,backup} "${new_root}/etc/lvm/"
 sed -i '/DEFAULTKERNEL=kernel/ s/$/-core/' "${new_root}/etc/sysconfig/kernel"
-sed -i 's/=(enforcing|permissive)/=disabled/' "${new_root}/etc/sysconfig/selinux"
-sed -i 's/=(enforcing|permissive)/=disabled/' "${new_root}/etc/selinux/config"
+sed -Ei 's/=(enabled|permissive)/=disabled/' "${new_root}/etc/sysconfig/selinux"
+sed -Ei 's/=(enabled|permissive)/=disabled/' "${new_root}/etc/selinux/config"
 
 # Your own pre commands and scripts.
 (( ${#p[@]} )) && for c in "${p[@]}"; do `${c}`; done
