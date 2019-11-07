@@ -54,6 +54,7 @@ fi
 args="$@"
 OPTS=T:m:p:P:s:S:Rq12
 LONGOPTS=tempsize:,mirror:,precommand:,postcommand:,prescript:,postscript:,rbind,quiet,one,two
+[[ ${-/x} != $- ]] && xTr="-x" || xTr=""
 
 ! PARSED=$( getopt --options=$OPTS --longoptions=$LONGOPTS --name "$0" -- "$@" )
 if [[ ${PIPESTATUS[0]} -ne 0 ]]; then
@@ -76,8 +77,8 @@ two=false
 while true; do
     case "$1" in
         -T|--tempsize)
-            T=$1
-            shift
+            T="$2"
+            shift 2
             ;;
         -m|--mirror)
             m="$2"
@@ -214,7 +215,7 @@ two () {
     systemctl restart sshd
 
     # Final steps: remove new_root, update grub, regen boot process, relabel SELinux.
-    umount -Rl "${new_root}"
+    umount -Rl ${new_root}/{"proc","boot","sys","dev","run"} ${new_root}
     rm -Rf "${new_root}"
     grub2-mkconfig -o /boot/grub2/grub.cfg
     dracut --regenerate-all --force
@@ -231,13 +232,13 @@ one () {
     chown root:ssh_keys /etc/ssh/*key # for some reason ssh_keys guid changes.
 
     # Eight eats seven! We write over / with the new filesystem in new_root.
-    rsync -aHAXSIxq --exclude={"/dev/*","/proc/*","/sys/*","/run/*","/slash/*","${new_root}/*"} / /slash/ --delete-after
+    rsync -aHAXSIxq --exclude={"/proc/*","/boot/*","/sys/*","/dev/*","/run/*","/slash/*","${new_root}/*"} / /slash/ --delete-after
 
     cd /slash
     mount --make-private /
     mount --make-private .
     pivot_root . "${new_root#?}"
-    exec chroot . bin/bash ${DIR}/${SCRIPT} -2 ${args}
+    exec chroot . bin/bash ${xTr} ${DIR}/${SCRIPT} -2 ${args}
 }
 
 zero () {
@@ -258,7 +259,7 @@ zero () {
     mount --make-private /
     mount --make-private .
     pivot_root . slash
-    exec chroot . bin/bash ${DIR}/${SCRIPT} -1 ${args}
+    exec chroot . bin/bash ${xTr} ${DIR}/${SCRIPT} -1 ${args}
 }
 
 
