@@ -30,3 +30,10 @@ chmod +x /usr/local/bin/887{,_p1,_p2}.sh
 * SELinux **needs** to be disabled first.
 * This hasn't been tested in the wild.
 * To see further use cases (such as running a pre-script script or a post-command, run `/usr/local/bin/887.sh` without arguments.
+
+## TODO:
+
+- [x] Create functions for each step;
+- [x] Merge all three scripts into one;
+- [x] Remove need for having script in specific location;
+- [ ] Fix running commands and running scripts, currently not working;
