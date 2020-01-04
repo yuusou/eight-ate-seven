@@ -15,21 +15,19 @@ CentOS 7 to 8 upgrade scripts
 
 ```bash
 git clone https://github.com/yuusou/eight-ate-seven.git
-cp 887{,_p1,_p2}.sh /usr/local/bin/
-chmod +x /usr/local/bin/887{,_p1,_p2}.sh
 ```
 
 ## Usage:
 
 ```bash
-/usr/local/bin/887.sh /8 # or some other, temporary directory you wish to use.
+bash 887.sh /8 # or some other, temporary directory you wish to use.
 ```
 
 ## Notes:
 
 * SELinux **needs** to be disabled first.
 * This hasn't been tested in the wild.
-* To see further use cases (such as running a pre-script script or a post-command, run `/usr/local/bin/887.sh` without arguments.
+* To see further use cases (such as running a pre-script script or a post-command, run `bash 887.sh` without arguments.
 
 ## TODO:
 
